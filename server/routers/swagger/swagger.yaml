@@ -1,0 +1,198 @@
+basePath: /api/
+consumes:
+- application/x-www-form-urlencoded
+definitions:
+  admin.LoginReq:
+    properties:
+      password:
+        description: 密码
+        example: "123456"
+        maxLength: 64
+        minLength: 6
+        type: string
+      username:
+        description: 用户名
+        example: hello
+        type: string
+    required:
+    - password
+    - username
+    type: object
+  admin.UserDetailReq:
+    type: object
+  e.Response:
+    properties:
+      code:
+        description: 返回码 正确返回时为0或者200xxx, 其他时为错误返回码
+        type: integer
+      data:
+        description: 数据
+      message:
+        description: 提示语
+        type: string
+    type: object
+  models.Status:
+    enum:
+    - 1
+    - 2
+    type: integer
+    x-enum-varnames:
+    - StatusOn
+    - StatusOff
+  types.LoginData:
+    properties:
+      accessToken:
+        description: 登录token
+        type: string
+      id:
+        description: 用户ID
+        type: string
+      username:
+        description: 用户名
+        type: string
+    type: object
+  types.UserDept:
+    properties:
+      id:
+        type: string
+      name:
+        type: string
+    type: object
+  types.UserItem:
+    properties:
+      avatar:
+        description: 头像
+        type: string
+      code:
+        description: 编码
+        type: string
+      createdAt:
+        type: string
+      dept:
+        $ref: '#/definitions/types.UserDept'
+      deptId:
+        type: string
+      id:
+        description: 用户ID
+        type: string
+      name:
+        description: 昵称
+        type: string
+      remark:
+        type: string
+      roles:
+        items:
+          $ref: '#/definitions/types.UserRole'
+        type: array
+      status:
+        allOf:
+        - $ref: '#/definitions/models.Status'
+        description: 状态
+      tenantId:
+        description: 租户ID
+        type: string
+      type:
+        description: 用户类型
+        type: string
+      updateAt:
+        type: string
+      username:
+        description: 邮箱
+        type: string
+    type: object
+  types.UserRole:
+    properties:
+      id:
+        type: string
+      name:
+        type: string
+    type: object
+info:
+  contact:
+    email: support@swag.io
+    name: API Support
+    url: http://www.swagger.io/support
+  description: "### vben-admin 1.0.0 API接口文档\n\n- web 端接口前缀: /api/v2\n\n> 接口用户认证用cookie/query/header中的
+    x-token 进行用户认证\n> \n> header 中必带信息\n> X-TOKEN: token 信息\n>\n\n#### 返回数据格式\n```\n{\n
+    \   \"code\":\"0\",\n    \"msg\":\"Success\",\n    \"data\": {\n        \"key\":\"value\"\n
+    \   }\n}\n```\n> code 为0时为正常返回  返回其他时为异常返回\n> 接口文档描述中一般只描述data结构\n\n\n### 返回码\n```\n//
+    CodeSuccess 请求成功\nCodeSuccess = 0\n// CodeCreated 已创建\nCodeCreated = 201\n\n//
+    CodeRedirect 301 跳转\nCodeRedirect = 301\n// CodeUnauthorized 未登录\nCodeUnauthorized
+    = 401\n// CodeForbidden 禁止访问\nCodeForbidden = 403\n// CodeNotFound 资源未找到\nCodeNotFound
+    = 404\n\n//CodeParamErr 各种奇奇怪怪的参数错误\nCodeParamErr       = 40001\nCodeUsernamePwdErr
+    = 40002\n\n// CodeSignExpired 签名过期\nCodeSignExpired = 40109\n// CodeExist 数据已存在\nCodeExist
+    \              = 40002\nCodeInsufficientBalance = 40003\n\n// CodeSystemError
+    系统错误\nCodeSystemError = 50001\n\n```\n\n"
+  license:
+    name: Apache 2.0
+    url: http://www.apache.org/licenses/LICENSE-2.0.html
+  termsOfService: http://swagger.io/terms/
+  title: ApiDoc 1.0.0
+  version: 1.0.0
+paths:
+  /login:
+    post:
+      consumes:
+      - application/json
+      description: 用户登录
+      operationId: admin.login
+      parameters:
+      - description: 参数
+        in: body
+        name: data
+        required: true
+        schema:
+          $ref: '#/definitions/admin.LoginReq'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: '返回码: 200'
+          schema:
+            allOf:
+            - $ref: '#/definitions/e.Response'
+            - properties:
+                data:
+                  $ref: '#/definitions/types.LoginData'
+              type: object
+      summary: 用户登录
+      tags:
+      - Auth
+  /userinfo:
+    get:
+      consumes:
+      - application/json
+      description: 获取用户详情
+      operationId: admin.detail
+      parameters:
+      - description: 表单
+        in: body
+        name: data
+        required: true
+        schema:
+          $ref: '#/definitions/admin.UserDetailReq'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: '返回码: 200'
+          schema:
+            allOf:
+            - $ref: '#/definitions/e.Response'
+            - properties:
+                data:
+                  $ref: '#/definitions/types.UserItem'
+              type: object
+      security:
+      - AuthToken: []
+      summary: 获取用户详情
+      tags:
+      - Admin
+produces:
+- application/json
+securityDefinitions:
+  AuthToken:
+    in: header
+    name: x-token
+    type: apiKey
+swagger: "2.0"

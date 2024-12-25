@@ -1,0 +1,27 @@
+system:
+  env: dev
+  db-type: mysql
+  listen: :8489
+  resource-path: /vben-admin/resources/
+  resource-domain:
+  token-expired-time: 86400
+  token-secret: gin-vben-admin
+  token-old-expired-time: 60
+  use-multipoint: true
+
+redis:
+  network: 127.0.0.1:6379
+  password:
+  db: 0
+  tokendb: 1
+
+mysql:
+  host: 127.0.0.1
+  port: 3306
+  config: charset=utf8mb4&parseTime=True&loc=Local
+  db-name: hmk_erp
+  username: root
+  password:
+  max-idle-conns: 10
+  max-open-conns: 100
+  log-mode: ""

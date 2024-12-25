@@ -1,0 +1,2 @@
+// Replace all snowflake.ID with string
+replace snowflake.ID string

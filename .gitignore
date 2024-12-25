@@ -1,0 +1,4 @@
+.db
+.idea
+web/.vscode
+server/*.yaml
